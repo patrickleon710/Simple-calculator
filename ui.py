@@ -44,7 +44,7 @@ class Calculator:
             signFrame.rowconfigure(r, weight=1)
 
         for i, text in enumerate(signs):
-            btn = tk.Button(signFrame, text=text, command=self.evaluate_input if text == "="  else lambda t=text: self.createText(t))
+            btn = tk.Button(signFrame, text=text, command=self.calculate_expression if text == "="  else lambda t=text: self.createText(t))
             btn.grid(row=i, column=0, sticky="nsew", padx=2, pady=2)
         
     def createText(self, text):            
@@ -64,10 +64,34 @@ class Calculator:
         self.input.delete(0,tk.END)
         self.input.insert(tk.END,result)
         
-    def calculate_expression(self, text):
+## Using custom function
+    def calculate_expression(self):
+        
+        text = self.input.get()
+        cleaned_text = text.replace("x", "*")
+        tokens = list(cleaned_text)
         i = 0
-        while i < len(text):
-            pass
+        print(tokens)
+        while i < len(tokens):
+            if tokens[i] in ["*", "/"]:
+                num1 = float(tokens[i-1])
+                operator = tokens[i]
+                num2 = float(tokens[i+1])
+                if operator == "/":
+                    subresult = num1 / num2
+                elif operator == "*":
+                    subresult = num1 * num2
+                tokens[i-1 : i+2] = [str(int(subresult))]
+                i-=1            
+            i+=1
+        result = tokens[0]
+        print(tokens)
+        print(result)
+        self.input.delete(0,tk.END)
+        self.input.insert(tk.END, result)
+        
+
+            
         pass
 
 if __name__ == "__main__":
