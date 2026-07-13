@@ -71,6 +71,8 @@ class Calculator:
         cleaned_text = text.replace("x", "*")
         tokens = list(cleaned_text)
         i = 0
+        if not tokens:
+            return
         print(tokens)
         while i < len(tokens):
             if tokens[i] in ["*", "/"]:
@@ -81,14 +83,26 @@ class Calculator:
                     subresult = num1 / num2
                 elif operator == "*":
                     subresult = num1 * num2
-                tokens[i-1 : i+2] = [str(int(subresult))]
+                tokens[i-1 : i+2] = [str(subresult)]
                 i-=1            
             i+=1
-        result = tokens[0]
+        result = float(tokens[0])
+        i = 1
+        try:
+            while i < len(tokens):
+                operator = tokens[i]
+                next_num = float(tokens[i+1])
+                if operator == "+":
+                    result += next_num
+                elif operator == "-":
+                    result -= next_num
+                i+=2
+        except Exception as e:
+            print("Error: ", e)
         print(tokens)
         print(result)
         self.input.delete(0,tk.END)
-        self.input.insert(tk.END, result)
+        self.input.insert(tk.END, str(result))
         
 
             
