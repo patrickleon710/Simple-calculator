@@ -44,14 +44,28 @@ class Calculator:
             signFrame.rowconfigure(r, weight=1)
 
         for i, text in enumerate(signs):
-            
+            print(i,text)
+            if text == "=":
+                cmd = self.calculate_expression
+            elif text == "<":
+                cmd = lambda t=text: self.deleteText(t)
+            elif text == "C":
+                cmd = lambda t=text: self.deleteText(t)
+            else:
+                cmd = lambda t=text: self.createText(t)
             btn = tk.Button(signFrame, text=text, command=cmd)
             btn.grid(row=i, column=0, sticky="nsew", padx=2, pady=2)
         
     def createText(self, text):            
             self.input.insert(tk.END,text)
     
-   
+    def deleteText(self, text):
+        if text == "C":
+            self.input.delete(0, tk.END)
+        elif text == "<":
+            current_input = self.input.get()
+            if current_input:
+                self.input.delete(len(current_input)-1, tk.END)
     
 ## Using python's built-in eval function 
     def evaluate_input(self):
