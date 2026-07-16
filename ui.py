@@ -1,4 +1,5 @@
 import tkinter as tk
+import re
 from math_func import add, subtract, multiply, divide
 
 class Calculator:
@@ -44,9 +45,9 @@ class Calculator:
             signFrame.rowconfigure(r, weight=1)
 
         for i, text in enumerate(signs):
-            print(i,text)
+            
             if text == "=":
-                cmd = self.calculate_expression
+                cmd = self.calculate_expression_mod
             elif text == "<":
                 cmd = lambda t=text: self.deleteText(t)
             elif text == "C":
@@ -71,8 +72,7 @@ class Calculator:
     def evaluate_input(self):
         text = self.input.get()
         self.inputText.append(text)
-        print(text)
-        print(self.inputText)
+        
         cleaned_text = text.replace("x", "*")
 
         result = eval(cleaned_text)
@@ -91,7 +91,7 @@ class Calculator:
         i = 0
         if not expr_tok:
             return
-        print(expr_tok)
+        
         while i < len(expr_tok):
             if expr_tok[i] in ["*", "/"]:
                 num1 = float(expr_tok[i-1])
@@ -117,8 +117,7 @@ class Calculator:
                 i+=2
         except Exception as e:
             print("Error: ", e)
-        print(expr_tok)
-        print(result)
+        
         self.input.delete(0,tk.END)
         self.input.insert(tk.END, str(result))
 
@@ -127,12 +126,11 @@ class Calculator:
         
         text = self.input.get()
         cleaned_text = text.replace("x", "*")
-        regex_expr = ["/d+./d+d+[+\-*/]"]
-        tokens = list(cleaned_text)
+        tokens = re.findall(r"\d+\.\d+|\d+|[+\-*/]", cleaned_text)
         i = 0
         if not tokens:
             return
-        print(tokens)
+        
         while i < len(tokens):
             if tokens[i] in ["*", "/"]:
                 num1 = float(tokens[i-1])
@@ -158,8 +156,7 @@ class Calculator:
                 i+=2
         except Exception as e:
             print("Error: ", e)
-        print(tokens)
-        print(result)
+        
         self.input.delete(0,tk.END)
         self.input.insert(tk.END, str(result))
 
@@ -171,5 +168,5 @@ if __name__ == "__main__":
     calculator = Calculator(root)
     root.mainloop()
 
-print(tk.TkVersion)
-print(tk.Tcl().eval("info patchlevel"))
+""" print(tk.TkVersion)
+print(tk.Tcl().eval("info patchlevel")) """
