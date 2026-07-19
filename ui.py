@@ -60,7 +60,7 @@ class Calculator:
         for i, text in enumerate(signs):
             
             if text == "=":
-                cmd = self.calculate_expression_mod
+                cmd = self.shunting_Yard
             elif text == "<":
                 cmd = lambda t=text: self.deleteText(t)
             elif text == "C":
@@ -195,21 +195,85 @@ class Calculator:
                     result -= next_num
                 i+=2
 
+            self.input.delete(0,tk.END)
+            self.input.insert(tk.END, str(result))
+
             history_entry = f"{text} = {result}"
             self.history.append(history_entry)
         except Exception as e:
             self.input.delete(0, tk.END)
             self.input.insert(tk.END, "Error")
 
-        print(self.history)
-        self.input.delete(0,tk.END)
-        self.input.insert(tk.END, str(result))
+        
 
+    ## Shunting-Yard algorithm
+    def infix_to_postfix(self, tokens):
+        precedence = {"+":1, "-":1, "*":2, "/":2}
+        output = []
+        operators = []
+        if not tokens:
+            return
+
+        for token in tokens:
+            if token in precedence:                    
+                while (operators and operators[-1] in precedence and precedence[operators[-1]] >= precedence[token]):
+                    output.append(operators.pop())
+                operators.append(token)
+            else:
+                output.append(token)
+        
+        while operators:
+            output.append(operators.pop())
+
+        return output
+
+    def evaluate_postfix(self, postfix):
+        stack = []
+
+        for token in postfix:
+            if token in ["+", "-", "*", "/"]:
+                b = stack.pop()
+                a = stack.pop()
+
+                if token == "+": stack.append(a + b)
+                elif token == "-": stack.append(a - b)
+                elif token == "*": stack.append(a * b)
+                elif token == "/":
+                    if b == 0:
+                        raise ValueError("Division by zero")
+                    stack.append(a / b)
+            else:
+                stack.append(float(token))
+        
+        result = stack[0]
+
+        return int(result) if result.is_integer() else result
+
+    def shunting_Yard(self):
+        try:
+            text = self.input.get()
+            cleaned_text = text.replace("x", "*")
+            tokens = re.findall(r"\d+\.\d+|\d+|[+\-*/]", cleaned_text)
+            i = 0
+            if not tokens:
+                return
             
-        pass
+            postfix = self.infix_to_postfix(tokens)
+            result = self.evaluate_postfix(postfix)
 
-## Shunting-Yard algorithm
+            self.input.delete(0,tk.END)
+            self.input.insert(tk.END, str(result))
 
+            history_entry = f"{text} = {result}"
+            self.history.append(history_entry)
+            if len(self.history) > 5:
+                self.history.pop(0)
+        except ValueError as ve:
+            self.input.delete(0, tk.END)
+            self.input.insert(tk.END, "Math Error")
+        except Exception as e:
+            self.input.delete(0, tk.END)
+            self.input.insert(tk.END, "Syntax Error")
 
 if __name__ == "__main__":
     root = tk.Tk()
