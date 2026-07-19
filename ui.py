@@ -72,11 +72,11 @@ class Calculator:
 
         
 
-## Translates button clicks into text in the input field
+    ## Translates button clicks into text in the input field
     def createText(self, text):            
             self.input.insert(tk.END,text)
     
-## Deletes last character or whole text
+    ## Deletes last character or whole text
     def deleteText(self, text):
         if text == "C":
             self.input.delete(0, tk.END)
@@ -109,7 +109,7 @@ class Calculator:
                 tk.Label(history_window, text=item, font=("Helvetica", 12)).pack(pady=2)
 
                 
-## Using python's built-in eval function 
+    ## Using python's built-in eval function 
     def evaluate_input(self):
         text = self.input.get()
         
@@ -121,7 +121,7 @@ class Calculator:
         self.input.delete(0,tk.END)
         self.input.insert(tk.END,result)
         
-## Using custom function - works if there are spaces between numbers and spaces
+    ## Using custom function - works if there are spaces between numbers and spaces
     def calculate_expression(self):
         
         text = self.input.get()
@@ -161,7 +161,7 @@ class Calculator:
         self.input.delete(0,tk.END)
         self.input.insert(tk.END, str(result))
 
-## Modified function to use regex
+    ## Modified function to use regex
     def calculate_expression_mod(self):
         try:
             text = self.input.get()
